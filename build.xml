@@ -48,14 +48,14 @@
 
 	<target name="mirror">
 		<p2.mirror>
-			<repository location="file:mirror" name="ADT old update site" />
+			<repository location="file:${basedir}/mirror" name="ADT old update site" />
 			<source>
 				<repository location="https://dl-ssl.google.com/android/eclipse/" />
 			</source>
 		</p2.mirror>
 	</target>
 	<target name="publish">
-		<p2.publish.featuresAndBundles metadataRepository="file:output" artifactRepository="file:output" publishArtifacts="true" compress="true" source="file:mirror" />
+		<p2.publish.featuresAndBundles metadataRepository="file:${basedir}/output" artifactRepository="file:${basedir}/output" publishArtifacts="true" compress="true" source="file:${basedir}/mirror" />
 	</target>
 </project>
 
