@@ -14,7 +14,7 @@
 	<target name="all">
 		<antcall target="clean" />
 		<antcall target="downloadAndUnzipBuilder" />
-		<antcall target="launchMirrorAndPublishWithEquinox" />
+		<antcall target="launchMirrorAndPublishWithBuilder" />
 	</target>
 	<target name="downloadAndUnzipBuilder" depends="doesBuilderAlreadyExist" unless="basebuilder.exists">
 		<get dest="." src="http://download.jboss.org/jbosstools/requirements/indigo/org.eclipse.releng.basebuilder_R37_M6.zip" />
@@ -34,7 +34,7 @@
 		<delete dir="output" />
 	</target>
 
-	<target name="launchMirrorAndPublishWithEquinox" description="we use the basebuilder to launch the mirror andpublish steps">
+	<target name="launchMirrorAndPublishWithBuilder" description="we use the basebuilder to launch the mirror andpublish steps">
 		<java fork="true" jar="./org.eclipse.releng.basebuilder/plugins/org.eclipse.equinox.launcher.jar" failonerror="true">
 			<arg line="-application org.eclipse.ant.core.antRunner" />
 			<arg line="-buildfile build.xml mirror" />
@@ -55,7 +55,7 @@
 		</p2.mirror>
 	</target>
 	<target name="publish">
-		<p2.publish.featuresAndBundles metadataRepository="file:${basedir}/output" artifactRepository="file:${basedir}/output" publishArtifacts="true" compress="true" source="file:${basedir}/mirror" />
+		<p2.publish.featuresAndBundles metadataRepository="file:${basedir}/p2" artifactRepository="file:${basedir}/p2" publishArtifacts="true" compress="true" source="${basedir}/mirror" />
 	</target>
 </project>
 
