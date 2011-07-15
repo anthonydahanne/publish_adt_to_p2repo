@@ -14,7 +14,7 @@
 	<target name="all">
 		<antcall target="clean" />
 		<antcall target="downloadAndUnzipBuilder" />
-		<antcall target="launchMirrorAndPublishWithEquinox" />
+		<antcall target="launchMirrorAndPublishWithBuilder" />
 	</target>
 	<target name="downloadAndUnzipBuilder" depends="doesBuilderAlreadyExist" unless="basebuilder.exists">
 		<get dest="." src="http://download.jboss.org/jbosstools/requirements/indigo/org.eclipse.releng.basebuilder_R37_M6.zip" />
@@ -22,7 +22,7 @@
 	</target>
 
 
-	<target name="doesBuilderAlreadyExist" description="in this step, we check if an eclipse runtime is available, if not, we download it and unzip it">
+	<target name="doesBuilderAlreadyExist" description="in this step, we check if an eclipse builder is available, if not, we download it and unzip it">
 
 		<condition property="basebuilder.exists">
 			<available file="org.eclipse.releng.basebuilder" type="dir" />
@@ -34,15 +34,12 @@
 		<delete dir="output" />
 	</target>
 
-	<target name="launchMirrorAndPublishWithEquinox" description="we use the basebuilder to launch the mirror andpublish steps">
+	<target name="launchMirrorAndPublishWithBuilder" description="we use the basebuilder to launch the mirror andpublish steps">
 		<java fork="true" jar="./org.eclipse.releng.basebuilder/plugins/org.eclipse.equinox.launcher.jar" failonerror="true">
 			<arg line="-application org.eclipse.ant.core.antRunner" />
 			<arg line="-buildfile build.xml mirror" />
 		</java>
-		<java fork="true" jar="./org.eclipse.releng.basebuilder/plugins/org.eclipse.equinox.launcher.jar" failonerror="true">
-			<arg line="-application org.eclipse.ant.core.antRunner" />
-			<arg line="-buildfile build.xml publish" />
-		</java>
+		
 	</target>
 
 
@@ -54,8 +51,8 @@
 			</source>
 		</p2.mirror>
 	</target>
-	<target name="publish">
+	<!--target name="publish">
 		<p2.publish.featuresAndBundles metadataRepository="file:${basedir}/output" artifactRepository="file:${basedir}/output" publishArtifacts="true" compress="true" source="file:${basedir}/mirror" />
-	</target>
+	</target-->
 </project>
 
