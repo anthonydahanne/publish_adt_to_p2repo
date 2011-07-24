@@ -11,19 +11,31 @@
 		modern build tools.
 	</description>
 
+    <macrodef name = "git">
+        <attribute name = "command" />
+        <attribute name = "dir" default = "" />
+        <element name = "args" optional = "true" />
+        <sequential>
+            <echo message = "git @{command}" />
+            <exec executable = "git" dir = "@{dir}">
+                <arg value = "@{command}" />
+                <args/>
+            </exec>
+        </sequential>
+    </macrodef>
+
 	<target name="all">
 		<antcall target="clean" />
 		<antcall target="downloadAndUnzipBuilder" />
 		<antcall target="launchMirrorAndPublishWithBuilder" />
 	</target>
+
 	<target name="downloadAndUnzipBuilder" depends="doesBuilderAlreadyExist" unless="basebuilder.exists">
 		<get dest="." src="http://download.jboss.org/jbosstools/requirements/indigo/org.eclipse.releng.basebuilder_R37_M6.zip" />
 		<unzip src="org.eclipse.releng.basebuilder_R37_M6.zip" dest="." />
 	</target>
 
-
 	<target name="doesBuilderAlreadyExist" description="in this step, we check if an eclipse runtime is available, if not, we download it and unzip it">
-
 		<condition property="basebuilder.exists">
 			<available file="org.eclipse.releng.basebuilder" type="dir" />
 		</condition>
@@ -45,7 +57,6 @@
 		</java>
 	</target>
 
-
 	<target name="mirror">
 		<p2.mirror>
 			<repository location="file:${basedir}/mirror" name="ADT old update site" />
@@ -54,8 +65,41 @@
 			</source>
 		</p2.mirror>
 	</target>
+
 	<target name="publish">
-		<p2.publish.featuresAndBundles metadataRepository="file:${basedir}/p2" artifactRepository="file:${basedir}/p2" publishArtifacts="true" compress="true" source="${basedir}/mirror" />
+	    <git command = "clone" dir = "${basedir}">
+            <args>
+                <arg value = "git@github.com:rgladwell/publish_adt_to_p2repo.git" />
+                <arg value = "updates" />
+            </args>
+        </git>
+	    <git command = "checkout" dir = "${basedir}/updates">
+            <args>
+                <arg value = "gh-pages" />
+            </args>
+        </git>
+        <git command = "pull" dir = "${basedir}/updates" />
+		<p2.publish.featuresAndBundles metadataRepository="file:${basedir}/updates" artifactRepository="file:${basedir}/updates" publishArtifacts="true" compress="true" source="${basedir}/mirror" />
+	    <git command = "add" dir = "${basedir}/updates">
+            <args>
+                <arg value = "." />
+                <arg value = "features" />
+                <arg value = "plugins" />
+            </args>
+        </git>
+	    <git command = "commit" dir = "${basedir}/updates">
+            <args>
+                <arg value = "-am" />
+                <arg value = '\"updated p2 repo\"' />
+            </args>
+        </git>
+	    <git command = "push" dir = "${basedir}/updates">
+            <args>
+                <arg value = "origin" />
+                <arg value = "gh-pages" />
+            </args>
+        </git>
 	</target>
+
 </project>
 
