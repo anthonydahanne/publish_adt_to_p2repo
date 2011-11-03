@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="publish_adt_to_p2repo" default="all" basedir=".">
+
 	<description>
 		This ant script should be run by a an eclipse runtime,
 		that contains
