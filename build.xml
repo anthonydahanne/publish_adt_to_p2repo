@@ -69,7 +69,7 @@
 	<target name="publish">
 	    <git command = "clone" dir = "${basedir}">
             <args>
-                <arg value = "git@github.com:rgladwell/publish_adt_to_p2repo.git" />
+                <arg value = "git@github.com:anthonydahanne/publish_adt_to_p2repo.git" />
                 <arg value = "updates" />
             </args>
         </git>
